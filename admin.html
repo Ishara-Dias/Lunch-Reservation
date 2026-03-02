@@ -584,14 +584,20 @@
 
                 const allRows = (json && json.data) || [];
 
-                // Filter client-side using Submitted At column (DD/MM/YYYY format)
+                // Filter client-side using Submitted At column — handles both
+                // DD/MM/YYYY (string) and ISO 2026-03-02T... (Google Sheets auto-converted date)
                 if (dateVal) {
                     const [yyyy, mm, dd] = dateVal.split('-');
-                    const filterStr = `${dd}/${mm}/${yyyy}`; // e.g. "02/03/2026"
+                    const fmtDDMMYYYY = `${dd}/${mm}/${yyyy}`;   // "02/03/2026"
+                    const fmtISO = `${yyyy}-${mm}-${dd}`;   // "2026-03-02"
                     allData = allRows.filter(r => {
                         const sub = String(r['Submitted At'] || '');
                         const dt = String(r['Date & Time'] || '');
-                        return sub.startsWith(filterStr) || dt.includes(filterStr);
+                        return sub.startsWith(fmtDDMMYYYY) ||
+                            sub.startsWith(fmtISO) ||
+                            dt.includes(fmtDDMMYYYY) ||
+                            dt.includes(fmtISO) ||
+                            dt.includes(`${dd} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][parseInt(mm, 10) - 1]}`);
                     });
                 } else {
                     allData = allRows;
