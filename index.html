@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JF&amp;I Lunch Booking System</title>
+    <meta name="description"
+        content="JF&I Packaging Lunch Reservation System – Book your daily lunch before 10:00 AM." />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --accent: #FFBE0B;
+            --success: #00C897;
+            --dark: #1A1A2E;
+            --card: rgba(255, 255, 255, 0.09);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 40%, #0F3460 70%, #533483 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .35;
+            animation: blobMove 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            width: 520px;
+            height: 520px;
+            background: #FF6B35;
+            top: -150px;
+            left: -150px;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: #FFBE0B;
+            bottom: -120px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #533483;
+            top: 50%;
+            left: 60%;
+            animation-delay: 4s;
+        }
+
+        @keyframes blobMove {
+            0% {
+                transform: translate(0, 0) scale(1)
+            }
+
+            100% {
+                transform: translate(40px, 40px) scale(1.1)
+            }
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .15);
+            animation: floatP linear infinite;
+        }
+
+        @keyframes floatP {
+            0% {
+                transform: translateY(110vh) scale(0);
+                opacity: 0
+            }
+
+            10% {
+                opacity: 1
+            }
+
+            90% {
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0
+            }
+        }
+
+        .page-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            z-index: 10;
+            padding: 30px 20px;
+            max-width: 1050px;
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeInLeft .9s ease both;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            font-weight: 700;
+            font-size: .78rem;
+            letter-spacing: 3px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, .38);
+        }
+
+        .hero-panel h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+            margin-bottom: 14px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, .3);
+        }
+
+        .hero-panel h1 span {
+            color: var(--accent);
+        }
+
+        .hero-panel p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, .7);
+            max-width: 320px;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .hero-img-wrap {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, .15);
+            box-shadow: 0 0 0 12px rgba(255, 107, 53, .1), 0 20px 60px rgba(0, 0, 0, .45);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 12px rgba(255, 107, 53, .1), 0 20px 60px rgba(0, 0, 0, .45)
+            }
+
+            50% {
+                box-shadow: 0 0 0 22px rgba(255, 107, 53, .18), 0 20px 60px rgba(0, 0, 0, .45)
+            }
+        }
+
+        .hero-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Countdown */
+        .countdown-box {
+            margin-top: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 18px;
+            padding: 14px 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-label {
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .countdown-timer {
+            display: flex;
+            gap: 12px;
+        }
+
+        .cd-unit {
+            text-align: center;
+        }
+
+        .cd-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .cd-sep {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, .3);
+            align-self: flex-start;
+            padding-top: 2px;
+        }
+
+        .cd-lbl {
+            font-size: .6rem;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, .4);
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .83rem;
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .dot.closed {
+            background: #FF4444;
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: .5
+            }
+        }
+
+        /* Card */
+        .card {
+            flex: 0 0 420px;
+            background: var(--card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 28px;
+            padding: 44px 40px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .4);
+            animation: fadeInRight .9s ease both;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .card-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 14px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, .45);
+            animation: iconBounce 2.5s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-6px)
+            }
+        }
+
+        .card-header h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-header p {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 4px;
+        }
+
+        /* Closed overlay */
+        .closed-msg {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .closed-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .closed-msg h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .closed-msg p {
+            color: rgba(255, 255, 255, .6);
+            font-size: .92rem;
+            line-height: 1.7;
+        }
+
+        .next-open {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 8px 22px;
+            border-radius: 50px;
+            background: rgba(255, 190, 11, .15);
+            border: 1px solid rgba(255, 190, 11, .3);
+            color: var(--accent);
+            font-size: .85rem;
+            font-weight: 600;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .82rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .65);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border .3s, box-shadow .3s, background .3s;
+        }
+
+        .input-wrap input::placeholder {
+            color: rgba(255, 255, 255, .3);
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, .08);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, .18);
+        }
+
+        /* Rice options */
+        .rice-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .rice-option {
+            position: relative;
+        }
+
+        .rice-option input[type="radio"] {
+            display: none;
+        }
+
+        .rice-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 12px;
+            border-radius: 14px;
+            border: 2px solid rgba(255, 255, 255, .10);
+            background: rgba(255, 255, 255, .05);
+            cursor: pointer;
+            transition: all .3s ease;
+            text-align: center;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .rice-option label:hover {
+            border-color: rgba(255, 107, 53, .4);
+            background: rgba(255, 107, 53, .08);
+            transform: translateY(-2px);
+        }
+
+        .rice-option input:checked+label {
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, .15);
+            box-shadow: 0 4px 20px rgba(255, 107, 53, .3);
+        }
+
+        .rice-emoji {
+            font-size: 2rem;
+        }
+
+        .rice-name {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .rice-desc {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .45);
+        }
+
+        .rice-check {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem;
+            color: #fff;
+            opacity: 0;
+            transform: scale(0);
+            transition: all .25s ease;
+        }
+
+        .rice-option input:checked~.rice-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF6B35, #FFBE0B);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 107, 53, .45);
+            transition: transform .2s ease, box-shadow .2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .15), transparent);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(255, 107, 53, .55);
+        }
+
+        .btn-submit:hover:not(:disabled)::after {
+            opacity: 1;
+        }
+
+        .btn-submit:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, .4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* Error */
+        .error-msg {
+            color: #FF6B6B;
+            font-size: .78rem;
+            margin-top: 6px;
+            display: none;
+            padding-left: 4px;
+        }
+
+        /* Success */
+        .success-panel {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+            animation: popIn .6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(.6)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .success-ring {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success), #00E5B0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            margin: 0 auto 22px;
+            box-shadow: 0 10px 40px rgba(0, 200, 151, .45);
+            animation: successPulseAnim 2s ease-in-out infinite;
+        }
+
+        @keyframes successPulseAnim {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 40px rgba(0, 200, 151, .45)
+            }
+
+            50% {
+                box-shadow: 0 10px 60px rgba(0, 200, 151, .75)
+            }
+        }
+
+        .success-panel h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .success-panel p {
+            color: rgba(255, 255, 255, .6);
+            font-size: .92rem;
+            line-height: 1.7;
+        }
+
+        .booking-summary {
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin: 22px 0;
+            text-align: left;
+        }
+
+        .booking-summary .row {
+            display: flex;
+            justify-content: space-between;
+            font-size: .88rem;
+            padding: 6px 0;
+            color: rgba(255, 255, 255, .6);
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .booking-summary .row:last-child {
+            border-bottom: none;
+        }
+
+        .booking-summary .row strong {
+            color: #fff;
+        }
+
+        .rice-badge {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .special-badge {
+            background: rgba(255, 190, 11, .2);
+            color: var(--accent);
+            border: 1px solid rgba(255, 190, 11, .3);
+        }
+
+        .normal-badge {
+            background: rgba(0, 200, 151, .15);
+            color: var(--success);
+            border: 1px solid rgba(0, 200, 151, .25);
+        }
+
+        .btn-new {
+            margin-top: 4px;
+            padding: 12px 28px;
+            border: 2px solid rgba(255, 255, 255, .18);
+            border-radius: 12px;
+            background: transparent;
+            color: rgba(255, 255, 255, .75);
+            font-family: 'Outfit', sans-serif;
+            font-size: .92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .btn-new:hover {
+            background: rgba(255, 255, 255, .08);
+            border-color: rgba(255, 255, 255, .35);
+            color: #fff;
+        }
+
+        @media(max-width:820px) {
+            .page-wrapper {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .hero-panel h1 {
+                font-size: 1.9rem;
+            }
+
+            .hero-img-wrap {
+                width: 220px;
+                height: 220px;
+            }
+
+            .card {
+                flex: unset;
+                width: 100%;
+                max-width: 420px;
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="page-wrapper">
+
+        <!-- Hero -->
+        <div class="hero-panel">
+            <div class="brand-badge">JF&amp;I Packaging</div>
+            <h1>Reserve Your<br /><span>Lunch Today</span> 🍛</h1>
+            <p>Quick, easy and delicious. Book your preferred rice meal and enjoy a fresh lunch every day.</p>
+            <div class="hero-img-wrap">
+                <img src="lunch_hero.png" alt="Lunch Illustration" />
+            </div>
+            <!-- Countdown -->
+            <div class="countdown-box">
+                <div class="countdown-label">Booking Closes At 10:00 AM</div>
+                <div class="countdown-timer">
+                    <div class="cd-unit">
+                        <div class="cd-num" id="cdH">00</div>
+                        <div class="cd-lbl">Hrs</div>
+                    </div>
+                    <div class="cd-sep">:</div>
+                    <div class="cd-unit">
+                        <div class="cd-num" id="cdM">00</div>
+                        <div class="cd-lbl">Min</div>
+                    </div>
+                    <div class="cd-sep">:</div>
+                    <div class="cd-unit">
+                        <div class="cd-num" id="cdS">00</div>
+                        <div class="cd-lbl">Sec</div>
+                    </div>
+                </div>
+                <div class="status-badge"><span class="dot" id="statusDot"></span><span id="statusText">Booking
+                        Open</span></div>
+            </div>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+            <!-- Closed message -->
+            <div class="closed-msg" id="closedMsg" style="display:none;">
+                <div class="closed-icon">🔒</div>
+                <h3>Bookings Closed</h3>
+                <p>Lunch booking closes at <strong style="color:var(--accent)">10:00 AM</strong> daily.<br />Please book
+                    before 10 AM tomorrow.</p>
+                <span class="next-open">📅 Opens again at midnight</span>
+            </div>
+
+            <!-- Form -->
+            <div id="formSection">
+                <div class="card-header">
+                    <div class="card-icon">🍽️</div>
+                    <h2>Book Your Lunch</h2>
+                    <p>Fill in your details to reserve</p>
+                </div>
+                <form id="bookingForm" novalidate>
+                    <div class="form-group">
+                        <label for="empNo">Employee No.</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🪪</span>
+                            <input type="text" id="empNo" placeholder="e.g. EMP-0042" required />
+                        </div>
+                        <div class="error-msg" id="errEmpNo">⚠ Please enter your Employee No.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="empName">Employee Name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="empName" placeholder="Enter your full name" required />
+                        </div>
+                        <div class="error-msg" id="errEmpName">⚠ Please enter your name.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Rice Type</label>
+                        <div class="rice-options">
+                            <div class="rice-option">
+                                <input type="radio" name="riceType" id="specialRice" value="Special Rice" />
+                                <label for="specialRice">
+                                    <span class="rice-emoji">🌟</span>
+                                    <span class="rice-name">Special Rice</span>
+                                    <span class="rice-desc">Fragrant Yellow Rice</span>
+                                </label>
+                                <div class="rice-check">✓</div>
+                            </div>
+                            <div class="rice-option">
+                                <input type="radio" name="riceType" id="normalRice" value="Normal Rice" />
+                                <label for="normalRice">
+                                    <span class="rice-emoji">🍚</span>
+                                    <span class="rice-name">Normal Rice</span>
+                                    <span class="rice-desc">Steamed White Rice</span>
+                                </label>
+                                <div class="rice-check">✓</div>
+                            </div>
+                        </div>
+                        <div class="error-msg" id="errRice">⚠ Please select a rice type.</div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">✨ Confirm Booking</button>
+                </form>
+            </div>
+
+            <!-- Success -->
+            <div class="success-panel" id="successPanel">
+                <div class="success-ring">✅</div>
+                <h3>Booking Confirmed!</h3>
+                <p>Your lunch has been successfully booked. Enjoy your meal! 🎉</p>
+                <div class="booking-summary">
+                    <div class="row"><span>Employee No.</span><strong id="s-empNo"></strong></div>
+                    <div class="row"><span>Employee Name</span><strong id="s-empName"></strong></div>
+                    <div class="row"><span>Rice Selection</span><strong id="s-riceType"></strong></div>
+                    <div class="row"><span>Date &amp; Time</span><strong id="s-date"></strong></div>
+                </div>
+                <button class="btn-new" id="newBookingBtn">+ New Booking</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── CONFIG ──────────────────────────────────────────────────────
+        // Paste your Google Apps Script Web App URL here after deployment:
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHS0uTqWSs1_fnuZCqHKtYZ2nqAGhTFQBtXp_w-HT3m84rcYAI0nHQWlrGDXZsF3sZWA/exec';
+        // ─────────────────────────────────────────────────────────────────
+
+        // Particles
+        const pc = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const s = Math.random() * 6 + 3;
+            p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;animation-duration:${Math.random() * 12 + 8}s;animation-delay:${Math.random() * 10}s;`;
+            pc.appendChild(p);
+        }
+
+        // ─── Time cutoff (10:00 AM Sri Lanka = UTC+5:30) ─────────────────
+        function getSriLankaDate() {
+            const now = new Date();
+            const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+            return new Date(utc + (5.5 * 3600000)); // UTC+5:30
+        }
+
+        function isBookingOpen() {
+            const sl = getSriLankaDate();
+            const cutoff = new Date(sl);
+            cutoff.setHours(10, 0, 0, 0);
+            return sl < cutoff;
+        }
+
+        function msUntilCutoff() {
+            const sl = getSriLankaDate();
+            const cutoff = new Date(sl);
+            cutoff.setHours(10, 0, 0, 0);
+            return cutoff - sl;
+        }
+
+        function updateCountdown() {
+            const open = isBookingOpen();
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            const formSec = document.getElementById('formSection');
+            const closedMsg = document.getElementById('closedMsg');
+
+            if (!open) {
+                document.getElementById('cdH').textContent = '00';
+                document.getElementById('cdM').textContent = '00';
+                document.getElementById('cdS').textContent = '00';
+                dot.classList.add('closed');
+                txt.textContent = 'Booking Closed';
+                formSec.style.display = 'none';
+                closedMsg.style.display = 'block';
+                document.getElementById('successPanel').style.display = 'none';
+                return;
+            }
+
+            dot.classList.remove('closed');
+            txt.textContent = 'Booking Open';
+            closedMsg.style.display = 'none';
+
+            const ms = msUntilCutoff();
+            const totalSec = Math.floor(ms / 1000);
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            document.getElementById('cdH').textContent = String(h).padStart(2, '0');
+            document.getElementById('cdM').textContent = String(m).padStart(2, '0');
+            document.getElementById('cdS').textContent = String(s).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // ─── Form submission ──────────────────────────────────────────────
+        const form = document.getElementById('bookingForm');
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Guard: check time again
+            if (!isBookingOpen()) { updateCountdown(); return; }
+
+            const empNo = document.getElementById('empNo').value.trim();
+            const empName = document.getElementById('empName').value.trim();
+            const riceEl = document.querySelector('input[name="riceType"]:checked');
+
+            let valid = true;
+            if (!empNo) { showErr('errEmpNo', true); shake('empNo'); valid = false; } else showErr('errEmpNo', false);
+            if (!empName) { showErr('errEmpName', true); shake('empName'); valid = false; } else showErr('errEmpName', false);
+            if (!riceEl) { showErr('errRice', true); valid = false; } else showErr('errRice', false);
+            if (!valid) return;
+
+            const riceType = riceEl.value;
+            const sl = getSriLankaDate();
+            const dateStr = sl.toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            const timeStr = sl.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            // Loading state
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>Booking...';
+
+            try {
+                if (APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+                    const payload = new FormData();
+                    payload.append('empNo', empNo);
+                    payload.append('empName', empName);
+                    payload.append('riceType', riceType);
+                    payload.append('datetime', `${dateStr} ${timeStr}`);
+                    await fetch(APPS_SCRIPT_URL, { method: 'POST', body: payload, mode: 'no-cors' });
+                }
+            } catch (err) { console.warn('Sheet save failed:', err); }
+
+            // Show success
+            document.getElementById('s-empNo').textContent = empNo;
+            document.getElementById('s-empName').textContent = empName;
+            document.getElementById('s-date').textContent = `${dateStr} · ${timeStr}`;
+            document.getElementById('s-riceType').innerHTML =
+                riceType === 'Special Rice'
+                    ? `<span class="rice-badge special-badge">🌟 ${riceType}</span>`
+                    : `<span class="rice-badge normal-badge">🍚 ${riceType}</span>`;
+
+            document.getElementById('formSection').style.display = 'none';
+            const sp = document.getElementById('successPanel');
+            sp.style.display = 'block'; sp.style.animation = 'none'; sp.offsetHeight; sp.style.animation = '';
+
+            btn.disabled = false;
+            btn.innerHTML = '✨ Confirm Booking';
+        });
+
+        document.getElementById('newBookingBtn').addEventListener('click', function () {
+            if (!isBookingOpen()) { updateCountdown(); return; }
+            form.reset();
+            document.getElementById('formSection').style.display = 'block';
+            document.getElementById('successPanel').style.display = 'none';
+        });
+
+        function showErr(id, show) { document.getElementById(id).style.display = show ? 'block' : 'none'; }
+        function shake(id) {
+            const el = document.getElementById(id);
+            el.style.animation = 'none'; el.offsetHeight;
+            el.style.animation = 'shakeIn .4s ease'; el.focus();
+        }
+        const st = document.createElement('style');
+        st.textContent = `@keyframes shakeIn{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`;
+        document.head.appendChild(st);
+    </script>
+</body>
+
+</html>
