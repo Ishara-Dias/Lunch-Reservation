@@ -773,7 +773,7 @@
             </div>
             <!-- Countdown -->
             <div class="countdown-box">
-                <div class="countdown-label">Booking Closes At 10:00 AM</div>
+                <div class="countdown-label">Booking Closes At 8:00 PM</div>
                 <div class="countdown-timer">
                     <div class="cd-unit">
                         <div class="cd-num" id="cdH">00</div>
@@ -801,8 +801,8 @@
             <div class="closed-msg" id="closedMsg" style="display:none;">
                 <div class="closed-icon">🔒</div>
                 <h3>Bookings Closed</h3>
-                <p>Lunch booking closes at <strong style="color:var(--accent)">10:00 AM</strong> daily.<br />Please book
-                    before 10 AM tomorrow.</p>
+                <p>Lunch booking closes at <strong style="color:var(--accent)">8:00 PM</strong> daily.<br />Please book
+                    before 8 PM tomorrow.</p>
                 <span class="next-open">📅 Opens again at midnight</span>
             </div>
 
@@ -901,14 +901,14 @@
         function isBookingOpen() {
             const sl = getSriLankaDate();
             const cutoff = new Date(sl);
-            cutoff.setHours(10, 0, 0, 0);
+            cutoff.setHours(20, 0, 0, 0);
             return sl < cutoff;
         }
 
         function msUntilCutoff() {
             const sl = getSriLankaDate();
             const cutoff = new Date(sl);
-            cutoff.setHours(10, 0, 0, 0);
+            cutoff.setHours(20, 0, 0, 0);
             return cutoff - sl;
         }
 
