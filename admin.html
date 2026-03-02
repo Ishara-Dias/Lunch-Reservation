@@ -563,30 +563,32 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '<tr><td colspan="6"><div class="state-box"><div class="spinner-big"></div><p>Loading...</p></div></td></tr>';
 
-            const dateVal = document.getElementById('filterDate').value; // YYYY-MM-DD
-
-            // Build readable date format to match sheet (e.g. "Mon, 2 Mar 2026")
-            let filterStr = '';
-            if (dateVal) {
-                const d = new Date(dateVal + 'T00:00:00');
-                filterStr = d.toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-            }
+            const dateVal = document.getElementById('filterDate').value; // YYYY-MM-DD e.g. "2026-03-02"
 
             try {
-                if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-                    throw new Error('URL not configured');
-                }
-                const res = await fetch(`${APPS_SCRIPT_URL}?date=${encodeURIComponent(filterStr)}`);
+                // Fetch ALL rows — we filter client-side for reliability
+                const res = await fetch(APPS_SCRIPT_URL);
                 const json = await res.json();
-                allData = json.data || [];
+                const allRows = json.data || [];
+
+                // Filter client-side: match Submitted At (DD/MM/YYYY, HH:MM) against selected date
+                if (dateVal) {
+                    // Convert filter date YYYY-MM-DD → DD/MM/YYYY for matching
+                    const [yyyy, mm, dd] = dateVal.split('-');
+                    const filterDateStr = `${dd}/${mm}/${yyyy}`; // e.g. "02/03/2026"
+                    allData = allRows.filter(r => {
+                        const submittedAt = String(r['Submitted At'] || '');
+                        // Also check Date & Time fallback
+                        const dateTime = String(r['Date & Time'] || '');
+                        return submittedAt.startsWith(filterDateStr) || dateTime.includes(`${dd}/${mm}/${yyyy}`);
+                    });
+                } else {
+                    allData = allRows;
+                }
                 renderTable(allData);
             } catch (err) {
-                console.warn(err);
-                // Show demo data if URL not set yet
-                allData = [
-                    { 'Emp No': 'EMP-001', 'Emp Name': 'Demo Employee', 'Rice Type': 'Special Rice', 'Date & Time': 'Mon, 2 Mar 2026 08:45', 'Submitted At': '02/03/2026, 08:45 AM' },
-                ];
-                renderTable(allData, true);
+                console.warn('Fetch error:', err);
+                tbody.innerHTML = `<tr><td colspan="6"><div class="state-box"><div class="icon">⚠️</div><p>Could not load data. Check your Apps Script URL.<br/><small style="font-size:.75rem;opacity:.6">${err.message}</small></p></div></td></tr>`;
             }
         }
 
@@ -650,6 +652,5 @@
         }
     </script>
 </body>
-
 
 </html>
