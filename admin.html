@@ -558,38 +558,57 @@
             return new Date(utc + 5.5 * 3600000);
         }
 
-        // ── Load bookings from Apps Script ────────────────────────────────
-        async function loadBookings() {
+        // ── Load bookings via JSONP (bypasses CORS from GitHub Pages) ────────
+        function loadBookings() {
             const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '<tr><td colspan="6"><div class="state-box"><div class="spinner-big"></div><p>Loading...</p></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6"><div class="state-box"><div class="spinner-big"></div><p>Loading bookings...</p></div></td></tr>';
 
             const dateVal = document.getElementById('filterDate').value; // YYYY-MM-DD e.g. "2026-03-02"
 
-            try {
-                // Fetch ALL rows — we filter client-side for reliability
-                const res = await fetch(APPS_SCRIPT_URL);
-                const json = await res.json();
-                const allRows = json.data || [];
+            // Remove any previous JSONP script tag
+            const old = document.getElementById('jsonpScript');
+            if (old) old.remove();
 
-                // Filter client-side: match Submitted At (DD/MM/YYYY, HH:MM) against selected date
+            // Unique callback name
+            const cbName = 'jfiAdminCb_' + Date.now();
+
+            // Timeout in case Apps Script doesn't respond
+            const timer = setTimeout(() => {
+                delete window[cbName];
+                tbody.innerHTML = '<tr><td colspan="6"><div class="state-box"><div class="icon">⚠️</div><p>Request timed out. Check the Apps Script URL and re-deploy.</p></div></td></tr>';
+            }, 12000);
+
+            window[cbName] = function (json) {
+                clearTimeout(timer);
+                delete window[cbName];
+
+                const allRows = (json && json.data) || [];
+
+                // Filter client-side using Submitted At column (DD/MM/YYYY format)
                 if (dateVal) {
-                    // Convert filter date YYYY-MM-DD → DD/MM/YYYY for matching
                     const [yyyy, mm, dd] = dateVal.split('-');
-                    const filterDateStr = `${dd}/${mm}/${yyyy}`; // e.g. "02/03/2026"
+                    const filterStr = `${dd}/${mm}/${yyyy}`; // e.g. "02/03/2026"
                     allData = allRows.filter(r => {
-                        const submittedAt = String(r['Submitted At'] || '');
-                        // Also check Date & Time fallback
-                        const dateTime = String(r['Date & Time'] || '');
-                        return submittedAt.startsWith(filterDateStr) || dateTime.includes(`${dd}/${mm}/${yyyy}`);
+                        const sub = String(r['Submitted At'] || '');
+                        const dt = String(r['Date & Time'] || '');
+                        return sub.startsWith(filterStr) || dt.includes(filterStr);
                     });
                 } else {
                     allData = allRows;
                 }
                 renderTable(allData);
-            } catch (err) {
-                console.warn('Fetch error:', err);
-                tbody.innerHTML = `<tr><td colspan="6"><div class="state-box"><div class="icon">⚠️</div><p>Could not load data. Check your Apps Script URL.<br/><small style="font-size:.75rem;opacity:.6">${err.message}</small></p></div></td></tr>`;
-            }
+            };
+
+            // Inject script tag — JSONP, no CORS issue
+            const script = document.createElement('script');
+            script.id = 'jsonpScript';
+            script.src = APPS_SCRIPT_URL + '?callback=' + cbName;
+            script.onerror = function () {
+                clearTimeout(timer);
+                delete window[cbName];
+                tbody.innerHTML = '<tr><td colspan="6"><div class="state-box"><div class="icon">⚠️</div><p>Failed to reach the Apps Script. Check the URL and re-deploy.</p></div></td></tr>';
+            };
+            document.head.appendChild(script);
         }
 
         function renderTable(data, isDemo = false) {
